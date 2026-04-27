@@ -126,6 +126,7 @@ public:
   }
 
   bool isCompletedSuccessfully() const { return _currOffset == _bufferSize; }
+  void makeCompletedSuccessfully() { _currOffset = _bufferSize; }
 
 private:
   using diff_t = typename std::iterator_traits<TIterator>::difference_type;
