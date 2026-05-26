@@ -31,6 +31,11 @@
 #include <cstring>
 
 namespace bitsery {
+  struct Backup{
+    size_t _currOffset;
+    size_t _endReadOffset;
+    size_t _bufferSize;
+  };
 
 template<typename Buffer, typename Config = DefaultConfig>
 class InputBufferAdapter
@@ -125,6 +130,21 @@ public:
     }
   }
 
+
+  Backup backup(){
+    return {
+      _currOffset,
+      _endReadOffset,
+      _bufferSize
+    };
+  }
+
+  void restore(Backup& backup, size_t offset){
+    _currOffset = offset;
+    _endReadOffset = backup._endReadOffset;
+    _bufferSize = backup._bufferSize;
+  }
+
   bool isCompletedSuccessfully() const { return _currOffset == _bufferSize; }
   void makeCompletedSuccessfully() { _currOffset = _bufferSize; }
 
@@ -183,7 +203,7 @@ private:
   }
 
   size_t currentReadPosChecked(std::false_type) const { return _currOffset; }
-
+public:
   TIterator _beginIt;
   size_t _currOffset;
   size_t _endReadOffset;
